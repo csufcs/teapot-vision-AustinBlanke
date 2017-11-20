@@ -1,7 +1,8 @@
 // 
-// Michael Shafae
-// mshafae at fullerton.edu
+// Programmer: Austin Blanke
+// Date: 11/18/17 
 // 
+// Couldn't do instructions to pull because it said i didnt have access
 // A toy program which renders a teapot and two light sources. 
 //
 //
@@ -190,13 +191,40 @@ public:
     // For the sake of this assignment, a teapot is defined to be
     // inside the view frustum if and only if the position data
     // member is within the volume defined by the view frustum.
+
+    
     for(int i = 0; i < teapotCount; i++){
-      // do something here to check to see if the teapots
-      // are in or out of the view frustum. Set the visibility
-      // flag as needed.
-      teapots[i]->visible = true;
+      // CHECK IF TEAPOT IS VISIBLE OR NOT VISIBLE
+      // teapot is white if it is not visible
+      // teapot is red if visible
+      teapots[i]->visible = false;
+//	float lPlane = dot(glm::vec4(teapots[i]->position,1), clipPlaneMatrix[0] + clipPlaneMatrix[3]);
+//	float rPlane = dot(glm::vec4(teapots[i]->position,1), clipPlaneMatrix[3] - clipPlaneMatrix[0]);
+//	float bPlane = dot(glm::vec4(teapots[i]->position,1), clipPlaneMatrix[1] + clipPlaneMatrix[3]);
+//	float tPlane = dot(glm::vec4(teapots[i]->position,1), clipPlaneMatrix[3] - clipPlaneMatrix[1]);
+//	float nPlane = dot(glm::vec4(teapots[i]->position,1), clipPlaneMatrix[2] + clipPlaneMatrix[3]);
+//	float fPlane = dot(glm::vec4(teapots[i]->position,1), clipPlaneMatrix[3] - clipPlaneMatrix[2]);
+
+//	if (0 < lPlane && 0 < rPlane && 0 < bPlane && 
+//	    0 < tPlane && 0 < nPlane && 0 < fPlane)
+//	{ 
+//		teapots[i]->visible = true;
+//	}
+	
+    //use the clipPlaneMatrix to project the teapot's position an test if its in it
+	//not sure what the teapots points are in whether that be object coords or world coords or what; so i want to put them from model to view space (modelView) coordinates and then project them and test their position
+	glm::mat4 modelView;
+	mainCamera.lookAtMatrix(modelView);
+	glm::vec4 clipPos = clipPlaneMatrix * modelView * glm::vec4(teapots[i]->position,1);   
+	
+	if (-clipPos.w < clipPos.x && clipPos.x < clipPos.w &&
+	    -clipPos.w < clipPos.y && clipPos.y < clipPos.w &&
+	    -clipPos.w < clipPos.z && clipPos.z < clipPos.w)
+	{
+		teapots[i]->visible = true;
+	}
     }
-  }
+}
 
   bool render( ){
     glm::vec4 _light0;
@@ -278,7 +306,6 @@ public:
       activateUniforms(_light0, _light1, &blueMaterial);
       light1.draw( );
     }
-
     
     if(isKeyPressed('Q')){
       end( );      
