@@ -2,8 +2,7 @@
 // Programmer: Austin Blanke
 // Date: 11/18/17 
 // 
-// Couldn't do instructions to pull because it said i didnt have access
-// A toy program which renders a teapot and two light sources. 
+// Description: This program testing culling for a view frustum. 
 //
 //
 
@@ -191,28 +190,15 @@ public:
     // For the sake of this assignment, a teapot is defined to be
     // inside the view frustum if and only if the position data
     // member is within the volume defined by the view frustum.
-
     
     for(int i = 0; i < teapotCount; i++){
-      // CHECK IF TEAPOT IS VISIBLE OR NOT VISIBLE
       // teapot is white if it is not visible
       // teapot is red if visible
       teapots[i]->visible = false;
-//	float lPlane = dot(glm::vec4(teapots[i]->position,1), clipPlaneMatrix[0] + clipPlaneMatrix[3]);
-//	float rPlane = dot(glm::vec4(teapots[i]->position,1), clipPlaneMatrix[3] - clipPlaneMatrix[0]);
-//	float bPlane = dot(glm::vec4(teapots[i]->position,1), clipPlaneMatrix[1] + clipPlaneMatrix[3]);
-//	float tPlane = dot(glm::vec4(teapots[i]->position,1), clipPlaneMatrix[3] - clipPlaneMatrix[1]);
-//	float nPlane = dot(glm::vec4(teapots[i]->position,1), clipPlaneMatrix[2] + clipPlaneMatrix[3]);
-//	float fPlane = dot(glm::vec4(teapots[i]->position,1), clipPlaneMatrix[3] - clipPlaneMatrix[2]);
-
-//	if (0 < lPlane && 0 < rPlane && 0 < bPlane && 
-//	    0 < tPlane && 0 < nPlane && 0 < fPlane)
-//	{ 
-//		teapots[i]->visible = true;
-//	}
 	
-    //use the clipPlaneMatrix to project the teapot's position an test if its in it
-	//not sure what the teapots points are in whether that be object coords or world coords or what; so i want to put them from model to view space (modelView) coordinates and then project them and test their position
+	//not sure what space the teapots points are in; whether that be object coords or world coords 
+	// so i want to put them from model to view space (modelView) coordinates and then project them 
+	// and test their position
 	glm::mat4 modelView;
 	mainCamera.lookAtMatrix(modelView);
 	glm::vec4 clipPos = clipPlaneMatrix * modelView * glm::vec4(teapots[i]->position,1);   
@@ -236,6 +222,9 @@ public:
     std::tuple<int, int> w = windowSize( );
     double ratio = double(std::get<0>(w)) / double(std::get<1>(w));
 
+    //int vp[4];
+    //glGetIntegerv(GL_VIEWPORT, vp);
+    //fprintf(stderr, "viewport : %d, %d, %d, %d\n", vp[0], vp[1], vp[2], vp[3]);
     glm::mat4 clipPlaneMatrix;
     mainCamera.perspectiveMatrix(clipPlaneMatrix, ratio);
     checkVisibility(clipPlaneMatrix);
@@ -377,6 +366,3 @@ int main(int argc, char* argv[]){
   TeapotVisionApp app(argc, argv);
   return app();
 }
-
-
-
